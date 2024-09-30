@@ -26,7 +26,7 @@ jobs:
 
       - name: Convert Jupyter Notebooks to HTML
         run: |
-          jupyter nbconvert --to html --output-dir=./html_output .../notebook/*.ipynb  # Convert notebooks to HTML in a specific directory
+          jupyter nbconvert --to html --output-dir=./html_output ../notebook/*.ipynb  # Convert notebooks to HTML in a specific directory
 
       - name: Copy all directories and HTML files
         run: |
