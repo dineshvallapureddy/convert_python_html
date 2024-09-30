@@ -1,0 +1,42 @@
+name: Convert Notebook to HTML and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'  # Specify your Python version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nbconvert  # Install nbconvert to convert notebooks
+
+      - name: Convert Jupyter Notebooks to HTML
+        run: |
+          jupyter nbconvert --to html --output-dir=./html_output *.ipynb  # Convert notebooks to HTML in a specific directory
+
+      - name: Copy all directories and HTML files
+        run: |
+          mkdir -p deploy
+          cp -r ./* deploy/  # Copy everything to the deploy directory
+          cp -r html_output/* deploy/  # Copy the HTML output to the deploy directory
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy  # Use the deploy directory
+          keep_files: true  # Preserve all files and directories during deployment
